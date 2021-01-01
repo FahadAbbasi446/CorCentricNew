@@ -1,0 +1,6 @@
+# Default ignored files
+build/reports/tests
+target
+test-output
+.classpath
+.project
