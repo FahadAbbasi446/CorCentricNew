@@ -10,11 +10,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import static com.codeborne.selenide.Selenide.*;
 
 public class HomePageObjects {
-    By chapter1 = By.linkText("Chapter1");
-
-    public void verifyUserIsOnHomePage() {
-        $(chapter1).shouldBe(Condition.visible);
-    }
+    public By chapter1 = By.linkText("Chapter1");
 
     public void clickOnChapter1() {
         try {

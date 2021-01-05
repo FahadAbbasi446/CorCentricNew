@@ -1,10 +1,8 @@
 package src.Tests;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.WebDriverRunner;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Parameters;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import src.main.PageObjects.Chapter1PageObjects;
 import src.main.PageObjects.HomePageObjects;
 
@@ -13,20 +11,20 @@ import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.*;
 
 public class TestClass {
-
-    @Parameters({ "chromeDriverPath" })
+    @Parameters({"chromeDriverPath"})
     @BeforeClass
-    public void doBeforeClass(String chromeDriverPath) {
+    public void doBeforeClass(@Optional("path of driver will be mentioned here if not provided from XML file") String chromeDriverPath) {
         System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         System.setProperty("selenide.browser", "Chrome");
     }
-    @Parameters({ "URL" })
+
+    @Parameters({"URL"})
     @Test
-    public void verifyHomePage(String URL) {
+    public void verifyHomePage(@Optional("http://book.theautomatedtester.co.uk/") String URL) {
         // Opening required URL
         open(URL);
         HomePageObjects homePageObject = new HomePageObjects();
-        homePageObject.verifyUserIsOnHomePage();
+        $(homePageObject.chapter1).shouldBe(Condition.visible);
     }
 
     @Test(dependsOnMethods = {"verifyHomePage"})
@@ -40,12 +38,12 @@ public class TestClass {
         chapter1PageObject.verifyText();
     }
 
-    @Test(dependsOnMethods = {"verifyTextOnChapter1View"})
+    @Test(dependsOnMethods = {"verifyHomePage", "verifyTextOnChapter1View"})
     public void navigateBackAndVerifyHomePage() {
         // Navigating back to homepage.
         back();
         HomePageObjects homePageObject = new HomePageObjects();
-        homePageObject.verifyUserIsOnHomePage();
+        $(homePageObject.chapter1).shouldBe(Condition.visible);
     }
 
     @AfterClass
