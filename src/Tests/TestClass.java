@@ -1,9 +1,12 @@
 package src.Tests;
 
-import org.testng.annotations.BeforeTest;
+import com.codeborne.selenide.WebDriverRunner;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
-import src.PageObjects.Chapter1_PageObjects;
-import src.PageObjects.Home_PageObjects;
+import src.main.PageObjects.Chapter1PageObjects;
+import src.main.PageObjects.HomePageObjects;
 
 
 import static com.codeborne.selenide.Selenide.open;
@@ -11,27 +14,43 @@ import static com.codeborne.selenide.Selenide.*;
 
 public class TestClass {
 
-    @BeforeTest
-    public void doBeforeTest() {
-        String chromeDriverPath2 = System.getProperty("user.dir") + "\\chromedriver.exe";
-        System.setProperty("webdriver.chrome.driver", chromeDriverPath2);
+    @Parameters({ "chromeDriverPath" })
+    @BeforeClass
+    public void doBeforeClass(String chromeDriverPath) {
+        System.setProperty("webdriver.chrome.driver", chromeDriverPath);
         System.setProperty("selenide.browser", "Chrome");
     }
-
+    @Parameters({ "URL" })
     @Test
-    public void TestToVerifyTextOnChapter1View() {
+    public void verifyHomePage(String URL) {
         // Opening required URL
-        open("http://book.theautomatedtester.co.uk/");
+        open(URL);
+        HomePageObjects homePageObject = new HomePageObjects();
+        homePageObject.verifyUserIsOnHomePage();
+    }
 
+    @Test(dependsOnMethods = {"verifyHomePage"})
+    public void verifyTextOnChapter1View() {
         // Clicking on Chapter1 link.
-        Home_PageObjects PageObjects1 = new Home_PageObjects();
-        PageObjects1.ClickOn_Chapter1();
+        HomePageObjects homePageObject = new HomePageObjects();
+        homePageObject.clickOnChapter1();
 
         // Verifying test on Chapter1 view.
-        Chapter1_PageObjects Ch_HomePage = new Chapter1_PageObjects();
-        Ch_HomePage.VerifyText();
+        Chapter1PageObjects chapter1PageObject = new Chapter1PageObjects();
+        chapter1PageObject.verifyText();
+    }
 
+    @Test(dependsOnMethods = {"verifyTextOnChapter1View"})
+    public void navigateBackAndVerifyHomePage() {
         // Navigating back to homepage.
         back();
+        HomePageObjects homePageObject = new HomePageObjects();
+        homePageObject.verifyUserIsOnHomePage();
+    }
+
+    @AfterClass
+    public void doAfterClass() {
+        //Closing driver
+        WebDriverRunner.closeWebDriver();
     }
 }
