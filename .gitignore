@@ -1,6 +1,9 @@
 # Default ignored files
-build/reports/tests
+build
 target
 test-output
 .classpath
 .project
+*.iml
+.idea
+debug.log
